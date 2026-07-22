@@ -42,7 +42,7 @@ bash <(curl -fsSL https://ghproxy.com/https://raw.githubusercontent.com/WilsonBr
    ls /usr/bin/gost 2>&1         # 应提示不存在
    ls /etc/init.d/gost-forward 2>&1  # 应提示不存在
    ```
-3.### 📁 清理的部署路径清单（11 项）
+3. **📁 清理的部署路径清单（11 项）
    ```
    /etc/gost-forward/              # 主配置目录
    /usr/bin/uu                     # uu 工具
