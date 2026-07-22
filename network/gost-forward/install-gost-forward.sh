@@ -3,7 +3,7 @@
 # Gost Forward Manager - 一键全自动安装脚本
 # 版本: v2.3.0
 # 适用: OpenWrt / iStoreOS (x86_64)
-# 描述: 从 GitHub 下载安装包并完成全自动部署，无需任何交互
+# 描述: 从 GitHub 下载安装包并完成全自动部署，无需任何交互，自动拉取 Gost 最新版
 # 用法: sh install-gost-forward.sh
 #=============================================================================
 
@@ -18,8 +18,10 @@ DOWNLOAD_URL="https://github.soloplus.xyz/https://github.com/WilsonBryanz/normal
 TARBALL_NAME="gost-forward.tar.gz"
 EXTRACT_DIR="/tmp/gost-forward-extract"
 PACKAGE_DIR="${EXTRACT_DIR}/gost-forward"
-GOST_VERSION="3.0.0-rc.10"
-GOST_DOWNLOAD_URL="https://github.soloplus.xyz/https://github.com/go-gost/gost/releases/download/v${GOST_VERSION}/gost_${GOST_VERSION}_linux_amd64.tar.gz"
+
+# 初始化全局版本变量（将在运行中动态获取）
+GOST_VERSION=""
+GOST_DOWNLOAD_URL=""
 
 # 部署路径
 CONFIG_DIR="/etc/gost-forward"
@@ -176,7 +178,7 @@ check_dependencies() {
     log_info "检测系统依赖..."
     MISSING_DEPS=""
     
-    for dep in curl tar grep sed; do
+    for dep in curl tar grep sed awk; do
         if ! command -v ${dep} >/dev/null 2>&1; then
             MISSING_DEPS="${MISSING_DEPS} ${dep}"
         fi
@@ -198,6 +200,30 @@ check_dependencies() {
         fi
     fi
     log_success "系统依赖检测通过"
+}
+
+#=============================================================================
+# 获取 Gost 最新版本号
+#=============================================================================
+get_latest_gost_version() {
+    log_info "正在从 GitHub 获取 Gost 最新正式版版本号..."
+    local ver=""
+    
+    if command -v curl >/dev/null 2>&1; then
+        # 尝试通过重定向获取最新 release tag
+        ver=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/go-gost/gost/releases/latest | awk -F'/' '{print $NF}' | sed 's/^v//')
+    fi
+    
+    if [ -n "$ver" ]; then
+        GOST_VERSION="$ver"
+        log_success "识别到最新正式版: v${GOST_VERSION}"
+    else
+        GOST_VERSION="3.2.6"
+        log_warn "版本识别失败，将使用默认后备版本: v${GOST_VERSION}"
+    fi
+    
+    # 动态拼接下载链接
+    GOST_DOWNLOAD_URL="https://github.soloplus.xyz/https://github.com/go-gost/gost/releases/download/v${GOST_VERSION}/gost_${GOST_VERSION}_linux_amd64.tar.gz"
 }
 
 #=============================================================================
@@ -389,6 +415,8 @@ INITEOF
 # 下载 Gost v3 二进制
 #=============================================================================
 install_gost() {
+    get_latest_gost_version
+    
     log_info "正在下载 Gost v3 (${GOST_VERSION})..."
     
     if [ -f "${GOST_BIN}" ]; then
