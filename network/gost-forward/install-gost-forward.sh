@@ -1,7 +1,7 @@
 #!/bin/sh
 #=============================================================================
 # Gost Forward Manager - 一键全自动安装脚本
-# 版本: v2.3.0
+# 版本: v2.3.1 (修复网络查询卡死 Bug)
 # 适用: OpenWrt / iStoreOS (x86_64)
 # 描述: 从 GitHub 下载安装包并完成全自动部署，无需任何交互，自动拉取 Gost 最新版
 # 用法: sh install-gost-forward.sh
@@ -13,7 +13,7 @@ set -e
 # 配置变量
 #=============================================================================
 SCRIPT_NAME="install-gost-forward.sh"
-SCRIPT_VERSION="v2.3.0"
+SCRIPT_VERSION="v2.3.1"
 DOWNLOAD_URL="https://github.soloplus.xyz/https://github.com/WilsonBryanz/normal_shell/blob/main/network/gost-forward/gost-forward.tar.gz?raw=true"
 TARBALL_NAME="gost-forward.tar.gz"
 EXTRACT_DIR="/tmp/gost-forward-extract"
@@ -203,15 +203,15 @@ check_dependencies() {
 }
 
 #=============================================================================
-# 获取 Gost 最新版本号
+# 获取 Gost 最新版本号 (增加超时处理)
 #=============================================================================
 get_latest_gost_version() {
     log_info "正在从 GitHub 获取 Gost 最新正式版版本号..."
     local ver=""
     
     if command -v curl >/dev/null 2>&1; then
-        # 尝试通过重定向获取最新 release tag
-        ver=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/go-gost/gost/releases/latest | awk -F'/' '{print $NF}' | sed 's/^v//')
+        # 加入 --connect-timeout 5 和 --max-time 10，防止网络不通导致无限卡死
+        ver=$(curl -Ls --connect-timeout 5 --max-time 10 -o /dev/null -w %{url_effective} https://github.com/go-gost/gost/releases/latest | awk -F'/' '{print $NF}' | sed 's/^v//')
     fi
     
     if [ -n "$ver" ]; then
