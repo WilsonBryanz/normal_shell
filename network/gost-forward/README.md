@@ -16,7 +16,7 @@ bash <(curl -fsSL https://github.soloplus.xyz/https://raw.githubusercontent.com/
 ### 当您需要清理环境、停止服务并卸载该 GOST 转发配置时，请执行以下命令：
 
 ```bash
-bash <(curl -fsSL https://ghproxy.com/https://raw.githubusercontent.com/WilsonBryanz/normal_shell/main/network/gost-forward/uninstall-gost-forward.sh)
+bash <(curl -fsSL[ https://github.soloplus.xyz/https://raw.githubusercontent.com/WilsonBryanz/normal_shell/main/network/gost-forward/uninstall-gost-forward.sh)
  ```
 
 
