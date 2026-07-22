@@ -14,12 +14,12 @@ set -e
 #=============================================================================
 SCRIPT_NAME="install-gost-forward.sh"
 SCRIPT_VERSION="v2.3.0"
-DOWNLOAD_URL="https://github.com/WilsonBryanz/normal_shell/blob/main/network/gost-forward/gost-forward.tar.gz?raw=true"
+DOWNLOAD_URL="https://github.soloplus.xyz/https://github.com/WilsonBryanz/normal_shell/blob/main/network/gost-forward/gost-forward.tar.gz?raw=true"
 TARBALL_NAME="gost-forward.tar.gz"
 EXTRACT_DIR="/tmp/gost-forward-extract"
 PACKAGE_DIR="${EXTRACT_DIR}/gost-forward"
 GOST_VERSION="3.0.0-rc.10"
-GOST_DOWNLOAD_URL="https://github.com/ginuerzh/gost/releases/download/v${GOST_VERSION}/gost_${GOST_VERSION}_linux_amd64.tar.gz"
+GOST_DOWNLOAD_URL="https://github.soloplus.xyz/https://github.com/ginuerzh/gost/releases/download/v${GOST_VERSION}/gost_${GOST_VERSION}_linux_amd64.tar.gz"
 
 # 部署路径
 CONFIG_DIR="/etc/gost-forward"
