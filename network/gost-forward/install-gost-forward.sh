@@ -14,7 +14,7 @@ set -e
 #=============================================================================
 SCRIPT_NAME="install-gost-forward.sh"
 SCRIPT_VERSION="v2.3.0"
-DOWNLOAD_URL="https://github.com/WilsonBryanz/normal_shell/blob/main/network/gost-forward.tar.gz?raw=true"
+DOWNLOAD_URL="https://github.com/WilsonBryanz/normal_shell/blob/main/network/gost-forward/gost-forward.tar.gz?raw=true"
 TARBALL_NAME="gost-forward.tar.gz"
 EXTRACT_DIR="/tmp/gost-forward-extract"
 PACKAGE_DIR="${EXTRACT_DIR}/gost-forward"
