@@ -1,7 +1,7 @@
 #!/bin/sh
 #=============================================================================
 # Gost Forward Manager - 一键卸载脚本
-# 版本: v2.3.0
+# 版本: v2.3.1
 # 适用: OpenWrt / iStoreOS (x86_64)
 # 功能: 完整清理 Gost Forward Manager 所有部署文件、cron 任务、
 #       sysupgrade 持久化配置及 LuCI 缓存
