@@ -1,7 +1,7 @@
 #!/bin/sh
 #=============================================================================
 # Gost Forward Manager - 一键全自动安装脚本
-# 版本: v2.3.1 (全面接入镜像代理，彻底解决卡死)
+# 版本: v2.3.3 (加入智能路径探测，兼容任意打包结构)
 # 适用: OpenWrt / iStoreOS (x86_64)
 #=============================================================================
 
@@ -11,11 +11,10 @@ set -e
 # 配置变量
 #=============================================================================
 SCRIPT_NAME="install-gost-forward.sh"
-SCRIPT_VERSION="v2.3.2"
+SCRIPT_VERSION="v2.3.3"
 DOWNLOAD_URL="https://github.soloplus.xyz/https://github.com/WilsonBryanz/normal_shell/blob/main/network/gost-forward/gost-forward.tar.gz?raw=true"
 TARBALL_NAME="gost-forward.tar.gz"
 EXTRACT_DIR="/tmp/gost-forward-extract"
-PACKAGE_DIR="${EXTRACT_DIR}"
 
 # 初始化全局版本变量
 GOST_VERSION=""
@@ -107,7 +106,7 @@ check_installed() {
 check_dependencies() {
     log_info "检测系统依赖..."
     MISSING_DEPS=""
-    for dep in curl tar grep sed awk; do
+    for dep in curl tar grep sed awk find; do
         if ! command -v ${dep} >/dev/null 2>&1; then MISSING_DEPS="${MISSING_DEPS} ${dep}"; fi
     done
     if [ -n "${MISSING_DEPS}" ]; then
@@ -127,11 +126,9 @@ get_latest_gost_version() {
     log_info "正在通过代理节点获取 Gost 最新正式版版本号..."
     local ver=""
     if command -v curl >/dev/null 2>&1; then
-        # 强制使用代理节点查询，限制5秒超时，彻底告别卡死
         ver=$(curl -Ls --connect-timeout 5 --max-time 10 -o /dev/null -w %{url_effective} https://github.soloplus.xyz/https://github.com/go-gost/gost/releases/latest | awk -F'/' '{print $NF}' | sed 's/^v//')
     fi
     
-    # 验证提取出来的版本号格式，如果提取为空或是"latest"说明失败
     if [ -n "$ver" ] && [ "$ver" != "latest" ]; then
         GOST_VERSION="$ver"
         log_success "成功识别到最新正式版: v${GOST_VERSION}"
@@ -161,21 +158,28 @@ extract_package() {
     rm -rf "${EXTRACT_DIR}" 2>/dev/null || true
     mkdir -p "${EXTRACT_DIR}"
     tar -xzf "/tmp/${TARBALL_NAME}" -C "${EXTRACT_DIR}" || { log_error "解压失败"; rollback; }
-    [ ! -d "${PACKAGE_DIR}" ] && { log_error "解压后未找到目录"; rollback; }
     log_success "解压完成"
 }
 
 deploy_files() {
-    log_info "正在部署文件..."
+    log_info "正在智能探测与部署文件..."
     mkdir -p "${CONFIG_DIR}"
     
-    if [ -f "${PACKAGE_DIR}/usr/bin/uu" ]; then
-        cp -f "${PACKAGE_DIR}/usr/bin/uu" "${UU_BIN}"
-        chmod 755 "${UU_BIN}"
-        log_success "部署: ${UU_BIN}"
-    else
+    # 智能探测：无论包外层包了多少个文件夹，直接寻找 usr/bin/uu
+    UU_SRC=$(find "${EXTRACT_DIR}" -type f -name "uu" 2>/dev/null | grep "usr/bin/uu" | head -n 1)
+    
+    if [ -z "${UU_SRC}" ]; then
+        log_error "部署失败：压缩包内未找到核心文件 usr/bin/uu"
         rollback
     fi
+    
+    # 动态反推真实的包根目录 (向上剥离三层: uu -> bin -> usr -> 包根目录)
+    PACKAGE_DIR=$(dirname $(dirname $(dirname "${UU_SRC}")))
+    log_success "识别到真实包路径: ${PACKAGE_DIR}"
+    
+    cp -f "${PACKAGE_DIR}/usr/bin/uu" "${UU_BIN}"
+    chmod 755 "${UU_BIN}"
+    log_success "部署: ${UU_BIN}"
     
     ln -sf "${UU_BIN}" "${UU_SBIN}" 2>/dev/null || true
     ln -sf "${UU_BIN}" "${GOST_FORWARD_BIN}" 2>/dev/null || true
@@ -319,7 +323,7 @@ refresh_luci() {
 print_summary() {
     echo ""
     echo -e "${GREEN}============================================${NC}"
-    echo -e "${GREEN}  Gost Forward Manager v2.3.2 安装完成！${NC}"
+    echo -e "${GREEN}  Gost Forward Manager v2.3.3 安装完成！${NC}"
     echo -e "${GREEN}============================================${NC}"
     echo ""
     echo "  输入 uu 进入终端面板，或登录 Web 界面查看。"
