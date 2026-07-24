@@ -15,7 +15,7 @@ SCRIPT_VERSION="v2.3.2"
 DOWNLOAD_URL="https://github.soloplus.xyz/https://github.com/WilsonBryanz/normal_shell/blob/main/network/gost-forward/gost-forward.tar.gz?raw=true"
 TARBALL_NAME="gost-forward.tar.gz"
 EXTRACT_DIR="/tmp/gost-forward-extract"
-PACKAGE_DIR="${EXTRACT_DIR}/gost-forward"
+PACKAGE_DIR="${EXTRACT_DIR}"
 
 # 初始化全局版本变量
 GOST_VERSION=""
