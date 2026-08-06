@@ -12,7 +12,7 @@ set -e
 #=============================================================================
 SCRIPT_NAME="install-gost-forward.sh"
 SCRIPT_VERSION="v2.3.3"
-DOWNLOAD_URL="https://github.soloplus.xyz/https://github.com/WilsonBryanz/normal_shell/blob/main/network/gost-forward/gost-forward.tar.gz?raw=true"
+DOWNLOAD_URL="https://github.com/WilsonBryanz/normal_shell/blob/main/network/gost-forward/gost-forward.tar.gz?raw=true"
 TARBALL_NAME="gost-forward.tar.gz"
 EXTRACT_DIR="/tmp/gost-forward-extract"
 
@@ -126,7 +126,7 @@ get_latest_gost_version() {
     log_info "正在通过代理节点获取 Gost 最新正式版版本号..."
     local ver=""
     if command -v curl >/dev/null 2>&1; then
-        ver=$(curl -Ls --connect-timeout 5 --max-time 10 -o /dev/null -w %{url_effective} https://github.soloplus.xyz/https://github.com/go-gost/gost/releases/latest | awk -F'/' '{print $NF}' | sed 's/^v//')
+        ver=$(curl -Ls --connect-timeout 5 --max-time 10 -o /dev/null -w %{url_effective} https://github.com/go-gost/gost/releases/latest | awk -F'/' '{print $NF}' | sed 's/^v//')
     fi
     
     if [ -n "$ver" ] && [ "$ver" != "latest" ]; then
@@ -137,7 +137,7 @@ get_latest_gost_version() {
         log_warn "版本识别超时或失败，自动降级使用默认版本: v${GOST_VERSION}"
     fi
     
-    GOST_DOWNLOAD_URL="https://github.soloplus.xyz/https://github.com/go-gost/gost/releases/download/v${GOST_VERSION}/gost_${GOST_VERSION}_linux_amd64.tar.gz"
+    GOST_DOWNLOAD_URL="https://github.com/go-gost/gost/releases/download/v${GOST_VERSION}/gost_${GOST_VERSION}_linux_amd64.tar.gz"
 }
 
 download_package() {
