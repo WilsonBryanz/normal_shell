@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-#  UU 加速棒 + mihomo(WARP) 融合架构 · 一键部署脚本  v12.8（预检去 FATAL 化 + EOL 自动安装放行 + fw3 去依赖 + 守护自锁修复 + 首次运行三态判定）
+#  UU + mihomo(WARP) 融合架构 · 一键部署脚本  v12.8（预检去 FATAL 化 + EOL 自动安装放行 + fw3 去依赖 + 守护自锁修复 + 首次运行三态判定）
 #  幂等 / 覆盖前自动备份 / 保护已修复文件 / 依赖与权限与系统兼容性兜底 / 中文日志 / 失败即中止
 #  修改日期：2026-09-23
 #
@@ -278,7 +278,7 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')] 安装模式: $MODE_LABEL （$MODE_STEPS）
 
 echo -e "${GREEN}"
 echo "=============================================================="
-echo "  UU 加速棒 + mihomo(WARP) 一键部署  v12.8"
+echo "  UU + mihomo(WARP) 一键部署  v12.8"
 # 注意：不要写成 $( ... || '' )，否则 shell 会把空串当命令执行 -> 退出码 127 -> 误触发 ERR 陷阱
 MODE_TXT="${MODE_LABEL:-完整部署}"
 [ "$CHECK_ONLY" = 1 ]   && MODE_TXT="仅自检"
@@ -1793,7 +1793,7 @@ init_proxy_manager() {
     fi
     cat > "$PROXY_SCRIPT" << 'EOF_PROXY'
 #!/bin/sh
-# UU 加速棒 + mihomo(WARP) 端口转发引擎（TUN 捕获模式）
+# UU + mihomo(WARP) 端口转发引擎（TUN 捕获模式）
 # 设计要点（满足用户两条硬约束）：
 #   1) mihomo 的 WARP / 功能3 端口转发的出网 必须走 tun163/tun164（WG 设备）。
 #   2) 只有功能3 转发规则里的「目标 IP」才被路由进 mihomo 的 TUN 捕获设备(mihomo0)，
@@ -3296,7 +3296,7 @@ EOF_MANAGER_V7
 
 deploy_file "$BASE_DIR/scripts/proxy_manager.sh" "EOF_PROXY_V7" "755" "" "$(cat <<'EOF_PROXY_V7'
 #!/bin/sh
-# UU 加速棒 + mihomo(WARP) 端口转发引擎（TUN 捕获模式）
+# UU + mihomo(WARP) 端口转发引擎（TUN 捕获模式）
 # 设计要点（满足用户两条硬约束）：
 #   1) mihomo 的 WARP / 功能3 端口转发的出网 必须走 tun163/tun164（WG 设备）。
 #   2) 只有功能3 转发规则里的「目标 IP」才被路由进 mihomo 的 TUN 捕获设备(mihomo0)，
